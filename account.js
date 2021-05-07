@@ -4,9 +4,10 @@ const bitcore = require("bitcore-lib");
 // const explorers = require("bitcore-explorers");
 const {blockexplorer} = require("blockchain.info");
 
-const {cutil} = require("@ghasemkiani/commonbase/cutil");
-const {Base} = require("@ghasemkiani/commonbase/base");
+const {cutil} = require("@ghasemkiani/base/cutil");
+const {Obj: Base} = require("@ghasemkiani/base/obj");
 const {Client} = require("@ghasemkiani/sochain/client");
+const {HDWallet} = require("@ghasemkiani/hdwallet");
 
 class Account extends Base {
 	get address() {
