@@ -6,7 +6,8 @@ const {blockexplorer} = require("blockchain.info");
 
 const {cutil} = require("@ghasemkiani/base/cutil");
 const {Obj: Base} = require("@ghasemkiani/base/obj");
-const {Client} = require("@ghasemkiani/sochain/client");
+// const {Client} = require("@ghasemkiani/sochain/client");
+const {Client} = require("@ghasemkiani/blockchain-info/client");
 const {HDWallet} = require("@ghasemkiani/hdwallet");
 
 class Account extends Base {
@@ -26,13 +27,14 @@ class Account extends Base {
 		let address = this.address;
 		let result = await blockexplorer.getAddress(address, options)
 		this.balance = cutil.asNumber(result.final_balance) * 1e-8;
+		return this.balance;
 	}
 	async toGetBalance() {
 		let client = new Client();
 		let address = this.address;
 		let balance = await client.toGetAddressBalance(address);
 		this.balance = balance;
-		
+		return this.balance;
 	}
 	async toUpdate() {
 		await this.toGetBalance();
