@@ -1,14 +1,14 @@
 //	@ghasemkiani/bitcoin/account
 
-const bitcore = require("bitcore-lib");
-// const explorers = require("bitcore-explorers");
-const {blockexplorer} = require("blockchain.info");
+import bitcore from "bitcore-lib";
+// import explorers from "bitcore-explorers";
+import {blockexplorer} from "blockchain.info";
 
-const {cutil} = require("@ghasemkiani/base/cutil");
-const {Obj: Base} = require("@ghasemkiani/base/obj");
-// const {Client} = require("@ghasemkiani/sochain/client");
-const {Client} = require("@ghasemkiani/blockchain-info/client");
-const {HDWallet} = require("@ghasemkiani/hdwallet");
+import {cutil} from "@ghasemkiani/base";
+import {Obj as Base} from "@ghasemkiani/base";
+// import {Client} from "@ghasemkiani/sochain";
+import {Client} from "@ghasemkiani/blockchain-info";
+import {HDWallet} from "@ghasemkiani/hdwallet"
 
 class Account extends Base {
 	get address() {
@@ -64,4 +64,4 @@ cutil.extend(Account.prototype, {
 	txs: null,
 });
 
-module.exports = {Account};
+export {Account};
