@@ -1,6 +1,6 @@
 {
   "name": "@ghasemkiani/bitcoin",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Utilities for the Bitcoin blockchain",
   "type": "module",
   "main": "index.js",
@@ -25,10 +25,10 @@
   "homepage": "https://gitlab.com/ghasemkiani/bitcoin#readme",
   "dependencies": {
     "@ghasemkiani/base": "github:ghasemkiani/base",
-    "@ghasemkiani/hdwallet": "github:ghasemkiani/hdwallet",
     "@ghasemkiani/blockchain-info": "github:ghasemkiani/blockchain-info",
+    "@ghasemkiani/hdwallet": "github:ghasemkiani/hdwallet",
     "@ghasemkiani/sochain": "gitlab:ghasemkiani/sochain",
-    "bitcore-lib": "^8.23.1",
+    "bitcore-lib": "^8.25.10",
     "blockchain.info": "^1.3.1"
   }
 }

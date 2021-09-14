@@ -5,20 +5,64 @@ import bitcore from "bitcore-lib";
 import {blockexplorer} from "blockchain.info";
 
 import {cutil} from "@ghasemkiani/base";
-import {Obj as Base} from "@ghasemkiani/base";
+import {Obj} from "@ghasemkiani/base";
 // import {Client} from "@ghasemkiani/sochain";
 import {Client} from "@ghasemkiani/blockchain-info";
 import {HDWallet} from "@ghasemkiani/hdwallet"
 
-class Account extends Base {
+const {PrivateKey, PublicKey, Address} = bitcore;
+
+class Account extends Obj {
+	get key() {
+		return this._key;
+	}
+	set key(key) {
+		if (!cutil.isNilOrEmptyString(key)) {
+			this._key = new PrivateKey(key).toString();
+		} else {
+			this._key = key;
+		}
+	}
+	get wif() {
+		return cutil.isNilOrEmptyString(this.key) ? null : new PrivateKey(this.key).toWIF().toString();
+	}
+	set wif(wif) {
+		if (cutil.isNilOrEmptyString(wif)) {
+			this.key = null;
+		} else {
+			this.key = PrivateKey.fromWIF(wif).toString();
+		}
+	}
+	get pub() {
+		if (!this._pub && this.key) {
+			this._pub = new PrivateKey(this.key).toPublicKey().toString();
+		}
+		return this._pub;
+	}
+	set pub(pub) {
+		this._pub = pub;
+	}
 	get address() {
-		if(this.key) {
-			this._address = new bitcore.PrivateKey(this.key).toAddress().toString();
+		if (cutil.isNilOrEmptyString(this._address)) {
+			if (this.pub) {
+				this._address = new PublicKey(this.pub).toAddress().toString();
+			}
 		}
 		return this._address;
 	}
 	set address(address) {
 		this._address = address;
+	}
+	get addressSw() {
+		if (cutil.isNilOrEmptyString(this._addressSw)) {
+			if (this.pub) {
+				this._addressSw = Address.fromPublicKey(new PublicKey(this.pub), null /* default network */, Address.PayToWitnessPublicKeyHash).toString();
+			}
+		}
+		return this._addressSw;
+	}
+	set addressSw(addressSw) {
+		this._addressSw = addressSw;
 	}
 	async toGetBalance1() {
 		let offset = 0;
@@ -58,8 +102,10 @@ class Account extends Base {
 	}
 }
 cutil.extend(Account.prototype, {
+	_pub: null,
+	_key: null,
 	_address: null,
-	key: null,
+	_addressSw: null,
 	balance: 0,
 	txs: null,
 });
