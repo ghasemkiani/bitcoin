@@ -6,8 +6,9 @@ import {blockexplorer} from "blockchain.info";
 
 import {cutil} from "@ghasemkiani/base";
 import {Obj} from "@ghasemkiani/base";
-import {Client} from "@ghasemkiani/sochain";
+// import {Client} from "@ghasemkiani/sochain";
 // import {Client} from "@ghasemkiani/blockchain-info";
+import {Client} from "@ghasemkiani/blockstream-api";
 import {HDWallet} from "@ghasemkiani/hdwallet"
 
 const {PrivateKey, PublicKey, Address} = bitcore;
