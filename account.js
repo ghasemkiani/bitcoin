@@ -1,5 +1,3 @@
-//	@ghasemkiani/bitcoin/account
-
 import bitcore from "bitcore-lib";
 // import explorers from "bitcore-explorers";
 import {blockexplorer} from "blockchain.info";
@@ -11,32 +9,75 @@ import {Obj} from "@ghasemkiani/base";
 import {Client} from "@ghasemkiani/blockstream-api";
 import {HDWallet} from "@ghasemkiani/hdwallet"
 
-const {PrivateKey, PublicKey, Address} = bitcore;
+const {PrivateKey, PublicKey, Address, Networks} = bitcore;
 
 class Account extends Obj {
+	static {
+		cutil.extend(this.prototype, {
+			_network: null,
+			_pub: null,
+			_key: null,
+			_address: null,
+			_addressSw: null,
+			_segwit: null,
+		});
+	}
+	get network() {
+		if (cutil.na(this._network)) {
+			this._network = "mainnet";
+		}
+		return this._network;
+	}
+	set network(network) {
+		this._network = network;
+	}
+	get bitcoreNetwork() {
+		return /test/.test(this.network) ? Networks.testnet : Networks.mainnet;
+	}
+	set bitcoreNetwork(bitcoreNetwork) {
+		if (cutil.a(bitcoreNetwork)) {
+			// only one testnet is supported
+			this.network = /test/.test(bitcoreNetwork.name) ? "testnet" : "mainnet";
+		}
+	}
+	get segwit() {
+		if (cutil.na(this._segwit)) {
+			this._segwit = cutil.a(this._address) ? /^(bc|tb|bcrt)/.test(this._address) : true;
+		}
+		return this._segwit;
+	}
+	set segwit(segwit) {
+		this._segwit = segwit;
+	}
 	get key() {
 		return this._key;
 	}
 	set key(key) {
-		if (!cutil.isNilOrEmptyString(key)) {
-			this._key = new PrivateKey(key).toString();
+		if (!cutil.na(key)) {
+			this._key = new PrivateKey(key, this.bitcoreNetwork).toString();
 		} else {
 			this._key = key;
 		}
 	}
 	get wif() {
-		return cutil.isNilOrEmptyString(this.key) ? null : new PrivateKey(this.key).toWIF().toString();
+		return cutil.na(this.key) ? null : new PrivateKey(this.key, this.bitcoreNetwork).toWIF().toString();
 	}
 	set wif(wif) {
-		if (cutil.isNilOrEmptyString(wif)) {
-			this.key = null;
+		if (cutil.na(wif)) {
+			// this.key = null;
 		} else {
-			this.key = PrivateKey.fromWIF(wif).toString();
+			try {
+				this.key = new PrivateKey(wif).toString();
+				this.network = "mainnet";
+			} catch (e) {
+				this.key = new PrivateKey(wif, Networks.testnet).toString();
+				this.network = "testnet";
+			}
 		}
 	}
 	get pub() {
 		if (!this._pub && this.key) {
-			this._pub = new PrivateKey(this.key).toPublicKey().toString();
+			this._pub = new PrivateKey(this.key, this.bitcoreNetwork).toPublicKey().toString();
 		}
 		return this._pub;
 	}
@@ -44,9 +85,9 @@ class Account extends Obj {
 		this._pub = pub;
 	}
 	get address() {
-		if (cutil.isNilOrEmptyString(this._address)) {
+		if (cutil.na(this._address)) {
 			if (this.pub) {
-				this._address = new PublicKey(this.pub).toAddress().toString();
+				this._address = new Address(new PublicKey(this.pub), this.bitcoreNetwork, this.segwit ? Address.PayToWitnessPublicKeyHash : null).toString();
 			}
 		}
 		return this._address;
@@ -55,7 +96,7 @@ class Account extends Obj {
 		this._address = address;
 	}
 	get addressSw() {
-		if (cutil.isNilOrEmptyString(this._addressSw)) {
+		if (cutil.na(this._addressSw)) {
 			if (this.pub) {
 				this._addressSw = Address.fromPublicKey(new PublicKey(this.pub), null /* default network */, Address.PayToWitnessPublicKeyHash).toString();
 			}
