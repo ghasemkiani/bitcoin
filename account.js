@@ -14,11 +14,12 @@ const {PrivateKey, PublicKey, Address, Networks} = bitcore;
 class Account extends Obj {
 	static {
 		cutil.extend(this.prototype, {
-			_network: null,
 			_pub: null,
 			_key: null,
 			_address: null,
-			_addressSw: null,
+			balance: 0,
+			txs: null,
+			_network: null,
 			_segwit: null,
 		});
 	}
@@ -37,7 +38,7 @@ class Account extends Obj {
 	set bitcoreNetwork(bitcoreNetwork) {
 		if (cutil.a(bitcoreNetwork)) {
 			// only one testnet is supported
-			this.network = /test/.test(bitcoreNetwork.name) ? "testnet" : "mainnet";
+			this.network = cutil.isString(bitcoreNetwork) ? bitcoreNetwork : /test/.test(bitcoreNetwork.name) ? "testnet" : "mainnet";
 		}
 	}
 	get segwit() {
@@ -67,7 +68,7 @@ class Account extends Obj {
 			// this.key = null;
 		} else {
 			try {
-				this.key = new PrivateKey(wif).toString();
+				this.key = new PrivateKey(wif, Networks.mainnet).toString();
 				this.network = "mainnet";
 			} catch (e) {
 				this.key = new PrivateKey(wif, Networks.testnet).toString();
@@ -94,17 +95,6 @@ class Account extends Obj {
 	}
 	set address(address) {
 		this._address = address;
-	}
-	get addressSw() {
-		if (cutil.na(this._addressSw)) {
-			if (this.pub) {
-				this._addressSw = Address.fromPublicKey(new PublicKey(this.pub), null /* default network */, Address.PayToWitnessPublicKeyHash).toString();
-			}
-		}
-		return this._addressSw;
-	}
-	set addressSw(addressSw) {
-		this._addressSw = addressSw;
 	}
 	async toGetBalance1() {
 		let offset = 0;
@@ -143,13 +133,5 @@ class Account extends Obj {
 		}
 	}
 }
-cutil.extend(Account.prototype, {
-	_pub: null,
-	_key: null,
-	_address: null,
-	_addressSw: null,
-	balance: 0,
-	txs: null,
-});
 
 export {Account};
