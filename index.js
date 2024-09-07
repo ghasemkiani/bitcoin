@@ -1,4 +1,1 @@
-//	@ghasemkiani/bitcoin
-import {Account} from "./account.js";
-
-export {Account};
+export * from "./account.js";
