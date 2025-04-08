@@ -107,6 +107,16 @@ class Account extends Obj {
   set address(address) {
     this._address = address;
   }
+  get client() {
+    let { network } = this;
+    if (cutil.na(this._client)) {
+      this._client = new Client({ network });
+    }
+    return this._client;
+  }
+  set client(client) {
+    this._client = client;
+  }
   async toGetBalance1() {
     let offset = 0;
     let limit = 0;
@@ -117,7 +127,7 @@ class Account extends Obj {
     return this.balance;
   }
   async toGetBalance() {
-    let client = new Client();
+    let { client } = this;
     let address = this.address;
     let balance = await client.toGetAddressBalance(address);
     this.balance = balance;
