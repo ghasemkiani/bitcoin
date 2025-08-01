@@ -1,34 +1,34 @@
 {
-	"name": "@ghasemkiani/bitcoin",
-	"version": "2.2.5",
-	"description": "Utilities for the Bitcoin blockchain",
-	"type": "module",
-	"main": "index.js",
-	"scripts": {
-		"test": "node --test"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://gitlab.com/ghasemkiani/bitcoin.git"
-	},
-	"keywords": [
-		"javascript",
-		"nodejs",
-		"blockchain",
-		"bitcoin"
-	],
-	"author": "Ghasem Kiani",
-	"license": "MIT",
-	"bugs": {
-		"url": "https://gitlab.com/ghasemkiani/bitcoin/issues"
-	},
-	"homepage": "https://gitlab.com/ghasemkiani/bitcoin#readme",
-	"dependencies": {
-		"@ghasemkiani/base": "github:ghasemkiani/base",
-		"@ghasemkiani/blockchain-info": "github:ghasemkiani/blockchain-info",
-		"@ghasemkiani/blockstream-api": "gitlab:ghasemkiani/blockstream-api",
-		"@ghasemkiani/hdwallet": "github:ghasemkiani/hdwallet",
-		"bitcore-lib": "^8.25.25",
-		"blockchain.info": "^1.3.1"
-	}
+  "name": "@ghasemkiani/bitcoin",
+  "version": "2.2.6",
+  "description": "Utilities for the Bitcoin blockchain",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "node --test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/ghasemkiani/bitcoin.git"
+  },
+  "keywords": [
+    "javascript",
+    "nodejs",
+    "blockchain",
+    "bitcoin"
+  ],
+  "author": "Ghasem Kiani",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/ghasemkiani/bitcoin/issues"
+  },
+  "homepage": "https://gitlab.com/ghasemkiani/bitcoin#readme",
+  "dependencies": {
+    "@ghasemkiani/base": "github:ghasemkiani/base",
+    "@ghasemkiani/blockchain-info": "github:ghasemkiani/blockchain-info",
+    "@ghasemkiani/blockstream-api": "gitlab:ghasemkiani/blockstream-api",
+    "@ghasemkiani/hdwallet": "github:ghasemkiani/hdwallet",
+    "bitcore-lib": "^8.25.25",
+    "blockchain.info": "^1.3.1"
+  }
 }

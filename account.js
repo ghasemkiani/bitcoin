@@ -117,15 +117,6 @@ class Account extends Obj {
   set client(client) {
     this._client = client;
   }
-  async toGetBalance1() {
-    let offset = 0;
-    let limit = 0;
-    let options = { limit, offset };
-    let address = this.address;
-    let result = await blockexplorer.getAddress(address, options);
-    this.balance = cutil.asNumber(result.final_balance) * 1e-8;
-    return this.balance;
-  }
   async toGetBalance() {
     let { client } = this;
     let address = this.address;
@@ -135,6 +126,13 @@ class Account extends Obj {
   }
   async toUpdate() {
     await this.toGetBalance();
+  }
+  async toGetUtxos() {
+    let account = this;
+    let {address} = account;
+    let {client} = account;
+    let utxos = await client.toGetUtxos(address);
+    return utxos;
   }
   async toGetTxs() {
     let address = this.address;
