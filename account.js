@@ -1,12 +1,12 @@
 import bitcore from "bitcore-lib";
-import { blockexplorer } from "blockchain.info";
 
 import { cutil } from "@ghasemkiani/base";
 import { Obj } from "@ghasemkiani/base";
+import { d } from "@ghasemkiani/decimal";
 import { Client } from "@ghasemkiani/blockstream-api";
 import { HDWallet } from "@ghasemkiani/hdwallet";
 
-const { PrivateKey, PublicKey, Address, Networks } = bitcore;
+const { PrivateKey, PublicKey, Address, Networks, Script } = bitcore;
 
 class Account extends Obj {
   static {
@@ -18,6 +18,7 @@ class Account extends Obj {
       txs: null,
       _network: null,
       _segwit: null,
+      decimals: 8,
     });
   }
   get network() {
@@ -134,23 +135,51 @@ class Account extends Obj {
     let utxos = await client.toGetUtxos(address);
     return utxos;
   }
-  async toGetTxs() {
-    let address = this.address;
-    this.txs = [];
-    let limit = 50;
-    let offset = 0;
-    loop: while (true) {
-      let { final_balance, n_tx, txs } = await blockexplorer.getAddress(
-        address,
-        { limit, offset },
-      );
-      let n = txs.length;
-      this.balance = cutil.asNumber(final_balance) * 1e-8;
-      this.txs = this.txs.concat(txs);
-      offset += n;
-      if (offset >= n_tx) {
-        break loop;
+  wrapNumber(n) {
+    return d(n).mul(10 ** this.decimals).asFixed();
+  }
+  unwrapNumber(s) {
+    return d(s).div(10 ** this.decimals).toNumber();
+  }
+  async toWrapNumber(n) {
+    return this.wrapNumber(n);
+  }
+  async toUnwrapNumber(s) {
+    return this.unwrapNumber(s);
+  }
+  async toTransfer({
+    tos, // [{ address, amount, amount_ }, ...]
+    agg = "all", // "all"/"smaller"/"bigger"
+    change = null,
+  }) {
+    let account = this;
+    let {segwit} = account;
+    let {address} = account;
+    let {client} = account;
+    let { data: utxosData } = await account.toGetUtxos();
+    if (utxosData.length === 0) {
+        throw new Error("No UTXOs found for this address.");
+    }
+    let script = segwit ? Script.buildWitnessV0Out(address).toHex() : Script.buildPublicKeyHashOut(address).toHex();
+    let utxos = utxosData.map(u => ({
+        txId: u.txid,
+        outputIndex: u.vout,
+        address: addressStr,
+        script,
+        satoshis: u.value,
+    }));
+    let total_$ = d(0);
+    for (let to of tos) {
+      if (cutil.na(item.amount_)) {
+        item.amount_ = account.wrapNumber(item.amount);
       }
+      total_$ = total_$.plus(item.amount_);
+    }
+    let total_ = total_$.asFixed();
+    if (agg !== "all") {
+      let uu = [];
+      let tot_$ = d(0);
+      // sort utxos according to agg and select the needed ones
     }
   }
 }
