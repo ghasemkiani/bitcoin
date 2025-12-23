@@ -1,6 +1,6 @@
 {
   "name": "@ghasemkiani/bitcoin",
-  "version": "2.2.7",
+  "version": "2.2.8",
   "description": "Utilities for the Bitcoin blockchain",
   "type": "module",
   "main": "index.js",
